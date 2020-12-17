@@ -14,7 +14,7 @@
                                 <v-form ref="loginForm" v-model="valid" lazy-validation>
                                     <v-row>
                                         <v-col cols="12">
-                                            <v-text-field v-model="loginEmail" :rules="loginEmailRules" label="E-mail" required></v-text-field>
+                                            <v-text-field v-model="loginUsername" :rules="loginUsernameRules" label="Username" required></v-text-field>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-text-field v-model="loginPassword" :append-icon="show1?'eye':'eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
@@ -42,7 +42,7 @@
                                             <v-text-field v-model="lastName" :rules="[rules.required]" label="Last Name" maxlength="20" required></v-text-field>
                                         </v-col>
                                         <v-col cols="12">
-                                            <v-text-field v-model="email" :rules="emailRules" label="E-mail" required></v-text-field>
+                                            <v-text-field v-model="username" :rules="usernameRules" label="Username" required></v-text-field>
                                         </v-col>
                                         <v-col cols="12">
                                             <v-text-field v-model="password" :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'" :rules="[rules.required, rules.min]" :type="show1 ? 'text' : 'password'" name="input-10-1" label="Password" hint="At least 8 characters" counter @click:append="show1 = !show1"></v-text-field>
@@ -100,18 +100,13 @@
     
     firstName: "",
     lastName: "",
-    email: "",
+    username: "",
     password: "",
     verify: "",
     loginPassword: "",
-    loginEmail: "",
-    loginEmailRules: [
-      v => !!v || "Required",
-      v => /.+@.+\..+/.test(v) || "E-mail must be valid"
-    ],
-    emailRules: [
-      v => !!v || "Required",
-      v => /.+@.+\..+/.test(v) || "E-mail must be valid"
+    loginUsername:"",
+    usernameRules: [
+        v => !!v || "Required"
     ],
 
     show1: false,
