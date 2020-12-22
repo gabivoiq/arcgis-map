@@ -12,8 +12,8 @@
     }
   </style>
   
-  <link rel="stylesheet" href="https://js.arcgis.com/4.17/esri/themes/light/main.css">
-  <script src="https://js.arcgis.com/4.17/"></script>
+  <link rel="stylesheet" href="https://js.arcgis.com/4.18/esri/themes/light/main.css">
+  <script src="https://js.arcgis.com/4.18/"></script>
   
   <script>  
     require([
@@ -36,16 +36,51 @@
       var popupTuristic = {
         title: "{Objective_Name}",
         content:
-          "<b>Descriere:</b> {Descriere}"
+          "<b>Descriere:</b> {Objective_Type}"
       };
       var turisticLayer = new FeatureLayer({
         url:
           "https://services3.arcgis.com/U26uBjSD32d7xvm2/arcgis/rest/services/Obiective_turistice_ClujNapoca/FeatureServer",
-        outFields: ["Objective_Name", "Descriere"],
-        popupTemplate: popupTuristic
+        outFields: ["*"],
+        popupTemplate: {
+        title: "{Objective_Name}",
+        content:
+          "<b>Descriere:</b> {Descriere}"
+        }
       });
 
       map.add(turisticLayer);
+
+      var sqlExpressions = [
+        "Objective_Type IS NOT NULL",
+        "Objective_Type = 'Stadium'",
+        "Objective_Type = 'Museum'"
+      ];
+      
+      var selectFilter = document.createElement("select");
+      selectFilter.setAttribute("class", "esri-widget esri-select");
+      selectFilter.setAttribute("style", "width: 275px; font-family: Avenir Next W00; font-size: 1em;");
+      sqlExpressions.forEach(function (sql){
+        var option = document.createElement("option");
+        option.value = sql;
+        option.innerHTML = sql;
+        selectFilter.appendChild(option);
+      });
+
+      view.ui.add(selectFilter, "top-right");
+
+      selectFilter.addEventListener("change", function (event) {
+        setFeatureLayerViewFilter(event.target.value);
+      });
+      
+      function setFeatureLayerViewFilter(expression) {
+        view.whenLayerView(turisticLayer).then(function (featureLayerView) {
+          featureLayerView.filter = {
+            where: expression
+          };
+        });
+      }
+
       
     });
   </script>
