@@ -31,8 +31,9 @@
       "esri/widgets/Locate",
       "esri/widgets/Track",
       "esri/widgets/Directions",
+      "esri/widgets/Search",
       "esri/symbols/SimpleMarkerSymbol"
-    ], function(Map, MapView, Graphic, FeatureLayer, Locate, Track, Directions, SimpleMarkerSymbol) {
+    ], function(Map, MapView, Graphic, FeatureLayer, Locate, Track, Directions, Search, SimpleMarkerSymbol) {
 
       var map = new Map({
         basemap: "streets-navigation-vector"
@@ -138,8 +139,61 @@
       directions.routeSymbol.width = "2";
       directions.routeSymbol.color = [0, 0, 0, 0.75];
       directions.routeSymbol.style = "short-dot";
-      
+
       view.ui.add(directions, "top-right");
+      
+      var search = new Search({
+        view: view
+      });
+      var search1 = new Search({
+        view: view
+      });
+
+      view.ui.add(search, "top-left");
+      
+      view.on("double-click", function (evt) {
+        search1.clear();
+        view.popup.clear();
+        if (search1.activeSource) {
+          var geocoder = search1.activeSource.locator; // World geocode service
+          var params = {
+            location: evt.mapPoint
+          };
+          geocoder.locationToAddress(params).then(
+            function (response) {
+              // Show the address found
+              var address = response.address;
+              showPopup(address, evt.mapPoint);
+            },
+            function (err) {
+              // Show no address found
+              showPopup("No address found.", evt.mapPoint);
+            }
+          );
+        }
+      });
+
+      function showPopup(address, pt) {
+        view.popup.open({
+          title: "Adresa exacta",
+          content:"<b>Coordonate: </b>" + Math.round(pt.longitude * 100000) / 100000 +
+            ", " + 
+            Math.round(pt.latitude * 100000) / 100000 + "</br>" +
+            "<b>Adresa: </b>" + address,
+          location: pt
+        });
+      }
+
+      search.sources.push({
+        layer: turisticLayer,
+        searchFields: ["Objective_Name"],
+        displayField: "Objective_Name",
+        exactMatch: false,
+        outFields: ["Objective_Name", "Descriere"],
+        resultGraphicEnabled: true,
+        name: "Obiective Turistice Cluj",
+        placeholder: "Example: Cluj Arena"
+      });
 
     });
   </script>
