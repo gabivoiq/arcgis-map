@@ -47,7 +47,7 @@
                     <v-col cols="12">
                       <v-text-field
                         v-model="password"
-                        :append-icon="show1 ? 'eye' : 'eye-off'"
+                        :append-icon="show1 ? 'mdi-eye' : 'mdi-eye-off'"
                         :rules="[rules.required]"
                         :type="show1 ? 'text' : 'password'"
                         name="input-10-1"
