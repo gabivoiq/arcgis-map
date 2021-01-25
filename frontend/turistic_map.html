@@ -80,8 +80,10 @@
 
       var sqlExpressions = [
         "Objective_Type IS NOT NULL",
-        "Objective_Type = 'Stadium'",
-        "Objective_Type = 'Museum'"
+        "Objective_Type = 'Culturale'",
+        "Objective_Type = 'Distractie'",
+        "Varsta >= 12",
+        "Varsta < 12" 
       ];
       
       var selectFilter = document.createElement("select");
