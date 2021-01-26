@@ -73,11 +73,22 @@ export default {
           view.ui.add(track, "top-left");
 
           var sqlExpressions = [
-            "Objective_Type IS NOT NULL",
-            "Objective_Type = 'Stadium'",
-            "Objective_Type = 'Museum'",
-          ];
+          "Varsta is not null",
+          "Objective_Type = 'Culturale'",
+          "Objective_Type = 'Distractie'",
+          "Varsta < 10",
+          "Varsta < 14" 
+        ];
 
+          var sqlNames = [
+          "Toate Varstele",
+          "Obiective Culturale",
+          "Obiective Recreationale",
+          "Varsta mai mica de 10 ani",
+          "Varsta mai mica de 14 ani"
+        ];
+
+          var i = 0;
           var selectFilter = document.createElement("select");
           selectFilter.setAttribute("class", "esri-widget esri-select");
           selectFilter.setAttribute(
@@ -87,7 +98,8 @@ export default {
           sqlExpressions.forEach(function (sql) {
             var option = document.createElement("option");
             option.value = sql;
-            option.innerHTML = sql;
+            option.innerHTML = sqlNames[i];
+            i++;
             selectFilter.appendChild(option);
           });
 
