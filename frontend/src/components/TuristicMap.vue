@@ -72,42 +72,52 @@ export default {
 
           view.ui.add(track, "top-left");
 
-          var sqlExpressions = [
-          "Varsta is not null",
-          "Objective_Type = 'Culturale'",
-          "Objective_Type = 'Distractie'",
-          "Varsta < 10",
-          "Varsta < 14" 
-        ];
+        //  var sqlExpressions = [
+        //  "Objective_Type = 'Culturale'",
+        //  "Objective_Type = 'Distractie'",
+        //  "Varsta < 10",
+        //  "Varsta < 14" 
+        //];
 
-          var sqlNames = [
-          "Toate Varstele",
-          "Obiective Culturale",
-          "Obiective Recreationale",
-          "Varsta mai mica de 10 ani",
-          "Varsta mai mica de 14 ani"
-        ];
+        //  var sqlNames = [
+        //  "Obiective Culturale",
+        //  "Obiective Recreationale",
+        //  "Varsta mai mica de 10 ani",
+        //  "Varsta mai mica de 14 ani"
+        //];
 
-          var i = 0;
-          var selectFilter = document.createElement("select");
-          selectFilter.setAttribute("class", "esri-widget esri-select");
-          selectFilter.setAttribute(
-            "style",
-            "width: 220px; font-family: Avenir Next W00; font-size: 1em;"
-          );
-          sqlExpressions.forEach(function (sql) {
-            var option = document.createElement("option");
-            option.value = sql;
-            option.innerHTML = sqlNames[i];
-            i++;
-            selectFilter.appendChild(option);
-          });
+          //var i = 0;
+          //var selectFilter = document.createElement("select");
+          //selectFilter.setAttribute("class", "esri-widget esri-select");
+          //selectFilter.setAttribute(
+          //  "style",
+          //  "width: 220px; font-family: Avenir Next W00; font-size: 1em;"
+          //);
+          //sqlExpressions.forEach(function (sql) {
+          //  var option = document.createElement("option");
+          //  option.value = sql;
+          //  option.innerHTML = sqlNames[i];
+          //  i++;
+          //  selectFilter.appendChild(option);
+          //});
 
-          view.ui.add(selectFilter, "top-left");
+         // view.ui.add(selectFilter, "top-left");
+          var objectiveType = "Objective_Type = '";
+          var quotation = "'";
+          var age = " and Varsta <= ";
 
-          selectFilter.addEventListener("change", function (event) {
-            setFeatureLayerViewFilter(event.target.value);
-          });
+
+          var variabilaType = "Distractie"; // SHI AICI BAGA
+          var variabilaAge = "5"; /////// BAGA AICI VOIQ-LEEEEEEEEEEEEEEEEEEE
+          
+
+          var typeHalf = objectiveType.concat(variabilaType);
+          var typeFull = typeHalf.concat(quotation);
+          var ageFull = age.concat(variabilaAge);
+          var filter = typeFull.concat(ageFull);
+          //selectFilter.addEventListener("online", function (event) {
+          setFeatureLayerViewFilter(filter);
+          //});
 
           function setFeatureLayerViewFilter(expression) {
             view.whenLayerView(turisticLayer).then(function (featureLayerView) {
