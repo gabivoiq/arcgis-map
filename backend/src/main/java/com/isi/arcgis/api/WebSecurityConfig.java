@@ -17,6 +17,7 @@ import org.springframework.web.servlet.config.annotation.CorsRegistry;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -30,6 +31,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        // This Origin header you can see that in Network tab
+        configuration.setAllowedOrigins(List.of("http://localhost:8080"));
+        configuration.setAllowedMethods(List.of("GET","POST", "PUT"));
+        configuration.setAllowedHeaders(List.of("content-type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -40,7 +54,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated() //it needs authentication for any request
                 .and()
                 .httpBasic();
-        http.cors().configurationSource(request -> new CorsConfiguration().applyPermitDefaultValues());
+        http.cors();
     }
 
     @Bean
