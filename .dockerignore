@@ -2,5 +2,5 @@
 **
 
 # Allow files and directories
-!/backend/target/*.jar
+!/backend/src/
 !/backend/pom.xml
