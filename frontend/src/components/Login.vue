@@ -175,6 +175,9 @@ const API_PATH = "http://localhost:8081/api";
 
 export default {
   name: "Login",
+  mounted() {
+    localStorage.clear();
+  },
   computed: {
     passwordMatch() {
       return () =>
@@ -189,11 +192,11 @@ export default {
           .post(API_PATH + "/login", {
             username: this.username,
             password: this.password,
-          })
+          }, {withCredentials: true})
           .then((res) => {
             console.log(res);
-            this.success_message = res.data["message"];
-            this.status_success = true;
+            localStorage.setItem("age", res.data['age'])
+            localStorage.setItem("userInterests", res.data['userInterests'])
             this.$router.push({ name: 'Map' })
           })
           .catch((error) => {
@@ -208,8 +211,10 @@ export default {
           .post(API_PATH + "/register", {
             username: this.username,
             password: this.password,
+            firstName: this.firstName,
+            lastName: this.lastName,
             passwordConfirm: this.password_verify,
-          })
+          }, {withCredentials:true})
           .then((res) => {
             console.log(res);
             this.success_message = res.data["message"];

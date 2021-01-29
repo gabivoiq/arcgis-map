@@ -1,9 +1,7 @@
 <template>
-  <div>
-    <NavigationBar />
   <v-container>
-    
-    <v-dialog v-model="dialog" persistent max-width="600px" min-width="360px">
+    <NavigationBar />
+    <v-card class="mx-auto overflow-hidden" max-height="800px" max-width="500px">
       <div>
         <v-tabs
           v-model="tab"
@@ -13,37 +11,44 @@
           dark
           grow
         >
-          <v-tab-item>
+          <v-tab>User profile</v-tab>
+          <v-tab-item >
             <v-card class="px-4">
               <v-card-text>
                 <v-form ref="loginForm" v-model="valid" lazy-validation>
                   <v-row>
                     <v-col cols="12">
                       <div>Username</div>
-                      <p class="display-1 text--primary">
-                        {{ username }}
-                      </p>
+                      <v-text-field v-model="username" readonly></v-text-field>
                       <br>
                       <div>First Name</div>
-                      <p class="display-1 text--primary">
-                        {{ firstName }}
-                      </p>
+                      <v-text-field v-model="firstName" readonly></v-text-field>
                       <br>
                       <div>Last Name</div>
-                      <p class="display-1 text--primary">
-                        {{ lastName }}
-                      </p>
+                      <v-text-field v-model="lastName" readonly></v-text-field>
                       <br>
                       <div>Age</div>
                       <v-text-field v-model="age" outlined></v-text-field>
                       <br>
                       <div>Activities</div>
                        <v-select
-                        :items="items"
-                        label="Select activities type"
-                        outlined
+                           v-model="userInterests"
+                           :items="items"
+                           multiple
+                           hint="Pick your favorite activities"
+                           outlined
+                           persistent-hint
                       ></v-select>
                     </v-col>
+                    <v-alert
+                        dense
+                        v-show="status_success"
+                        type="success"
+                        elevation="4"
+                        dismissible
+                    >
+                      {{ success_message }}
+                    </v-alert>
 
                     <v-col class="d-flex" cols="12" sm="6" xsm="12"> </v-col>
                     <v-spacer></v-spacer>
@@ -53,7 +58,7 @@
                         block
                         :disabled="!valid"
                         color="success"
-                        @click="validateLogin"
+                        @click="updateUserData"
                       >
                         Save
                       </v-btn>
@@ -65,9 +70,8 @@
           </v-tab-item>
         </v-tabs>
       </div>
-    </v-dialog>
+    </v-card>
   </v-container>
-  </div>
 </template>
 
 <script>
@@ -75,67 +79,71 @@ import axios from "axios";
 import NavigationBar from '@/components/NavigationBar';
 const API_PATH = "http://localhost:8081/api";
 
+
 export default {
   name: "Profile",
   components: {
     NavigationBar
   },
-  computed: {
-    // passwordMatch() {
-    //   return () =>
-    //     this.password === this.password_verify || "Password must match";
-    // },
+  mounted() {
+    this.getUserData()
   },
 
   methods: {
-    validateLogin() {
-      if (this.$refs.loginForm.validate()) {
-        axios
-          .post(API_PATH + "/login", {
+    updateUserData() {
+      axios
+          .put(API_PATH + "/profile", {
             username: this.username,
-            password: this.password,
+            firstName: this.firstName,
+            lastName: this.lastName,
+            age: this.age,
+            userInterests: this.userInterests
           })
           .then((res) => {
             console.log(res);
-            this.success_message = res.data["message"];
-            this.status_success = true;
-            this.$router.push({ name: 'Map' })
+            this.error_message = false;
+            this.status_success= true;
+            this.getUserData();
+            localStorage.setItem("age", this.age);
+            localStorage.setItem("userInterests", this.userInterests);
           })
           .catch((error) => {
-            this.error_message = error.response.data["message"];
-            this.status_error = true;
+            let msg = error.response.data["message"]
+            if(!msg) {
+              this.error_message = "Error processing the request";
+            } else {
+              this.error_message = msg;
+            }
+            this.display_error = true;
           });
-      }
     },
-    // reset() {
-    //   this.$refs.form.reset();
-    // },
-    // resetValidation() {
-    //   this.$refs.form.resetValidation();
-    // },
+    getUserData() {
+      axios.get(API_PATH + "/profile")
+          .then(response => {
+            this.lastName = response.data['lastName'];
+            this.firstName = response.data['firstName'];
+            this.username = response.data['username'];
+            this.age = response.data['age'];
+            this.userInterests = response.data['userInterests'];
+          })
+    }
   },
 
   data: () => ({
-    status_error: false,
+    userInterests: [],
+    display_error: false,
     error_message: "",
     status_success: false,
-    success_message: "",
+    success_message: "User profile was saved successfully",
     dialog: true,
     tab: 0,
     valid: true,
 
-    firstName: "aaaaaa",
-    lastName: "bbbbbb",
-    username: "aa",
-    age: 25,
-    items: ['Cultural', 'Enternainment'],
-
-    show1: false,
-    rules: {
-      required: (value) => !!value || "Required.",
-      min: (v) => (v && v.length >= 5) || "Min 5 characters",
-      max: (v) => (v && v.length <= 20) || "Max 20 characters",
-    },
+    firstName: '',
+    lastName: '',
+    username: '',
+    age: 0,
+    items: ['Cultural', 'Entertainment'],
   }),
 };
 </script>
