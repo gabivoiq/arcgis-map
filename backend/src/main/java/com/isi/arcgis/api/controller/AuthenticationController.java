@@ -67,13 +67,13 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<ResponseMessage> login(@RequestBody User user) {
+    public ResponseEntity<User> login(@RequestBody User user) {
         securityService.autoLogin(user.getUsername(), user.getPassword());
         Optional<User> userDb = userService.findByUsername(user.getUsername());
         if(userDb.isEmpty()) {
             throw new AccessDeniedException("Username " + user.getUsername() + " was not found");
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(new ResponseMessage("Login successful for " + user.getUsername()));
+        return ResponseEntity.status(HttpStatus.OK).body(userDb.get());
     }
 }
