@@ -13,7 +13,7 @@ services:
       - db
     environment:
       - SERVER_PORT=8081
-      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-isi}
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/${POSTGRES_DB:-arcgis}
       - SPRING_DATASOURCE_USERNAME=${POSTGRES_USER:-postgres}
       - SPRING_DATASOURCE_PASSWORD=${POSTGRES_PASS:-postgres}
       - SPRING_JPA_HIBERNATE_DDL_AUTO=${JPA_DDL_AUTO:-update}
@@ -29,7 +29,7 @@ services:
       - network_api_db
       - network_pg_db
     environment:
-      - POSTGRES_DB=${POSTGRES_DB:-isi}
+      - POSTGRES_DB=${POSTGRES_DB:-arcgis}
       - POSTGRES_USER=${POSTGRES_USER:-postgres}
       - POSTGRES_PASSWORD=${POSTGRES_PASS:-postgres}
     volumes:
