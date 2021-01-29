@@ -1,10 +1,15 @@
 <template>
-  <div id="viewDiv"></div>
+  <div id="viewDiv"><NavigationBar/></div>
 </template>
 
 <script>
 import { loadModules } from "esri-loader";
+import NavigationBar from '@/components/NavigationBar';
+
 export default {
+  components: {
+    NavigationBar
+  },
   mounted() {
     this.loadMap();
   },
